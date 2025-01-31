@@ -1,0 +1,8 @@
+build_env_vars:
+  ANACONDA_ROCKET_ENABLE_PY313 : yes
+
+upload_channels:
+  - sfe1ed40
+
+channels:
+  - https://staging.continuum.io/prefect/fs/python-stdnum-feedstock/pr2/a8c43bf
