@@ -23,7 +23,7 @@ index 74feac6..28539df 100755
 +    # "flake8  --config setup.cfg scrubadub/",
      # If py3.5 then examples with spacy don't work so disable doctests
 -    'if python3 --version | grep -Evq "Python (3\\.5\\.)" ; then nosetests --with-doctest --doctest-extension=rst ./tests/ ./scrubadub/ ./docs/ ; else nosetests ; fi',
-+    # Won`t check he docs folder
++    # Won`t check the docs folder
 +    # 'if python3 --version | grep -Evq "Python (3\\.5\\.)" ; then nosetests --with-doctest --doctest-extension=rst ./tests/ ./scrubadub/ ./docs/ ; else nosetests ; fi',
      "python3 ./tests/benchmark_accuracy.py --fast",
      "python3 ./tests/benchmark_time.py",
