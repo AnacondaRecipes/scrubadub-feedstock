@@ -11,6 +11,7 @@ source:
   patches:
     - patches/0001-changed-textblob-pin.patch
     - patches/0002-disable-pep-warnings.patch
+    - patches/0003-fix-asserts.patch  # [not win]
 
 build:
   number: 0
@@ -41,9 +42,11 @@ requirements:
 
 # tests/test_comparison_classes.py::ComparisonTestCase::test_filth_grouper
 # AssertionError: Lists differ: [('name', 'tagged', 'en_US'), ('phone', 'pho[98 chars]US')] != [('phone', 'phone', 'en_GB'), ('phone', 'tag[98 chars]US')]
+{% set tests_to_skip = "test_filth_grouper" %}
 
 # tests/test_comparison.py::ComparisonTestCase::test_dataframe
 # AssertionError: Lists differ: ['phone', 'phone', 'none', 'none'] != ['phone', 'none', 'phone', 'none']
+{% set tests_to_skip = tests_to_skip + " or test_dataframe" %}
 
 # AssertionError: 'Sun 31 Jul 1938' not found in ['Fri 10 Sep 1943', 'Thu 09 Sep 1943']
 {% set deselect_tests = " --deselect=tests/test_detector_date_of_birth.py::DoBTestCase::test_generate" %}
@@ -68,12 +71,12 @@ test:
     # ./tests/benchmark_accuracy.py --fast
     # ./tests/benchmark_time.py
     # Not work on win. 
-    #- python -v tests/run.py  # [not win]
-    - python tests/benchmark_accuracy.py --fast
-    - python tests/benchmark_time.py
-    # Unit and Functional tests
+    - python -v tests/run.py
+    #- python tests/benchmark_accuracy.py --fast
+    #- python tests/benchmark_time.py
+    # Unit tests
     # test_filth_grouper and test_dataframe disabled by the logical errors.
-    - pytest -v -k "not (test_filth_grouper or test_dataframe)" {{ deselect_tests }} tests
+    - pytest -v -k "not ({{ tests_to_skip }})" {{ deselect_tests }} tests
   requires:
     - pip
     - pytest
