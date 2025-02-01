@@ -59,6 +59,7 @@ test:
     - scrubadub
   commands:
     - pip check
+
     # Test process described in the GHA workflow unittests.yaml :
     # https://github.com/LeapBeyond/scrubadub/blob/v2.0.1/.github/workflows/unittests.yml#L78
     # Needed for stanford model
@@ -67,14 +68,13 @@ test:
       # >>> import nltk
       # >>> nltk.download('punkt_tab')
     - python -c "import nltk; nltk.download('punkt_tab')"
+
     # Benchmark tests:
     # ./tests/benchmark_accuracy.py --fast
     # ./tests/benchmark_time.py
-    # Not work on win. 
     - python -v tests/run.py
-    #- python tests/benchmark_accuracy.py --fast
-    #- python tests/benchmark_time.py
-    # Unit tests
+
+    # Unit tests:
     # test_filth_grouper and test_dataframe disabled by the logical errors.
     - pytest -v -k "not ({{ tests_to_skip }})" {{ deselect_tests }} tests
   requires:
