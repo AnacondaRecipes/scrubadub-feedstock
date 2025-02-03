@@ -16,8 +16,6 @@ source:
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  # The textblob pkg is not available on s390x target or for py>312
-  skip: True  # [s390x or py>312]
 
 requirements:
   build:

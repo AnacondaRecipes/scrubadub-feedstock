@@ -5,4 +5,4 @@ upload_channels:
   - sfe1ed40
 
 channels:
-  - https://staging.continuum.io/prefect/fs/python-stdnum-feedstock/pr2/a8c43bf
+  - https://staging.continuum.io/prefect/fs/textblob-feedstock/pr4/8ae0a6d
