@@ -31,7 +31,7 @@ requirements:
     # The conda main + snowflake channels have only 0.17.1 and 0.18.0.post0 versions.
     # https://github.com/LeapBeyond/scrubadub/blob/v2.0.1/requirements/python#L2 
     # upstream textblob==0.15.3
-    - textblob <=0.18.0.post0
+    - textblob >=0.15.3,<=0.18.0.post0
     - phonenumbers
     - python-stdnum
     - dateparser
