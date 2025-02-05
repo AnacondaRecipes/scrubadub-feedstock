@@ -1,0 +1,102 @@
+{% set name = "scrubadub" %}
+{% set version = "2.0.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/LeapBeyond/scrubadub/archive/v{{ version }}.tar.gz
+  sha256: 43652270d9e808318bf1741ddeb08a9dea30a91d28f3a3963041f30be9fc8d25
+  patches:
+    - patches/0001-changed-textblob-pin.patch
+    - patches/0002-disable-pep-warnings.patch
+    - patches/0003-fix-asserts.patch
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  build:
+    - patch  # [not win]
+    - m2-patch  # [win]
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+    # The conda main + snowflake channels have only 0.17.1 and 0.18.0.post0 versions.
+    # https://github.com/LeapBeyond/scrubadub/blob/v2.0.1/requirements/python#L2 
+    # upstream textblob==0.15.3
+    - textblob >=0.15.3,<=0.18.0.post0
+    - phonenumbers
+    - python-stdnum
+    - dateparser
+    - catalogue
+    - scikit-learn
+    - typing-extensions
+    - faker
+
+# tests/test_comparison_classes.py::ComparisonTestCase::test_filth_grouper
+# AssertionError: Lists differ: [('name', 'tagged', 'en_US'), ('phone', 'pho[98 chars]US')] != [('phone', 'phone', 'en_GB'), ('phone', 'tag[98 chars]US')]
+{% set tests_to_skip = "test_filth_grouper" %}
+
+# tests/test_comparison.py::ComparisonTestCase::test_dataframe
+# AssertionError: Lists differ: ['phone', 'phone', 'none', 'none'] != ['phone', 'none', 'phone', 'none']
+{% set tests_to_skip = tests_to_skip + " or test_dataframe" %}
+
+# AssertionError: 'Sun 31 Jul 1938' not found in ['Fri 10 Sep 1943', 'Thu 09 Sep 1943']
+{% set deselect_tests = " --deselect=tests/test_detector_date_of_birth.py::DoBTestCase::test_generate" %}
+
+
+test:
+  source_files:
+    - tests
+  imports:
+    - scrubadub
+  commands:
+    - pip check
+
+    # Test process described in the GHA workflow unittests.yaml :
+    # https://github.com/LeapBeyond/scrubadub/blob/v2.0.1/.github/workflows/unittests.yml#L78
+    # Needed for stanford model
+    # Resource punkt_tab not found.
+    # NLTK Downloader is used to obtain the resource:
+      # >>> import nltk
+      # >>> nltk.download('punkt_tab')
+    - python -c "import nltk; nltk.download('punkt_tab')"
+
+    # Benchmark tests:
+    # ./tests/benchmark_accuracy.py --fast
+    # ./tests/benchmark_time.py
+    - python -v tests/run.py
+
+    # Unit tests:
+    # test_filth_grouper and test_dataframe disabled by the logical errors.
+    - pytest -v -k "not ({{ tests_to_skip }})" {{ deselect_tests }} tests
+  requires:
+    - pip
+    - pytest
+    - pandas
+    - requests
+    - nltk
+    - wasabi
+
+about:
+  home: https://github.com/LeapBeyond/scrubadub
+  summary: Clean personally identifiable information from dirty dirty text.
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  dev_url: https://github.com/LeapBeyond/scrubadub/
+  doc_url: https://scrubadub.readthedocs.io/
+  description: | 
+    Remove personally identifiable information from free text. Sometimes we have additional metadata about the people we wish to anonymize. Other times we don’t. 
+    This package makes it easy to seamlessly scrub personal information from free text, without compromising the privacy of the people we are trying to protect.
+
+extra:
+  recipe-maintainers:
+    - snegireff

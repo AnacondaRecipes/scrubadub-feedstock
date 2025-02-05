@@ -1,0 +1,23 @@
+From 9460d7bae51cd8923e401f7773f09dc5ff5bdc4c Mon Sep 17 00:00:00 2001
+From: Andrii Osipov <aosipov@anaconda.com>
+Date: Wed, 5 Feb 2025 11:12:15 -0800
+Subject: [PATCH] changed textblob pin
+
+---
+ requirements/python | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/requirements/python b/requirements/python
+index 9784b7d..3cdbe48 100644
+--- a/requirements/python
++++ b/requirements/python
+@@ -1,5 +1,5 @@
+ # For the TextBlobNameDetecotr
+-textblob==0.15.3
++textblob>=0.15.3,<=0.18.0.post0
+ 
+ # For the PhoneDetector
+ phonenumbers
+-- 
+2.39.3 (Apple Git-146)
+
